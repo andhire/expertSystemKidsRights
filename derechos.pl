@@ -1,4 +1,4 @@
-%Reglas a Preguntar. Respuesta se guarda en memoria.
+%Hechos a Preguntar. Respuesta se guarda en memoria.
 familia(N) :- 
     nl,
     write(N),
@@ -90,7 +90,7 @@ padres(N) :-
 discriminanPorSexo(N) :- 
     nl,
     write(N),
-    write(", Te discrimina por tu sexo? s/n:"),
+    write(", Te discriminan por tu sexo? s/n:"),
     read(R),
     (   R=s -> 
         assert(teDiscriminanPorSexo(true))
@@ -101,7 +101,7 @@ discriminanPorSexo(N) :-
 discriminanPorEtnia(N) :- 
     nl,
     write(N),
-    write(", Te discrimina por tu etnia? s/n:"),
+    write(", Te discriminan por tu etnia? s/n:"),
     read(R),
     (   R=s -> 
         assert(teDiscriminanPorEtnia(true)) 
@@ -112,7 +112,7 @@ discriminanPorEtnia(N) :-
 discriminanPorIdioma(N) :- 
     nl,
     write(N),
-    write(", Te discrimina por tu idioma? s/n:"),
+    write(", Te discriminan por tu idioma? s/n:"),
     read(R),
     (   R=s -> 
         assert(teDiscriminanPorIdioma(true)) 
@@ -187,7 +187,7 @@ hospital(N) :-
 discapacidad(N) :- 
     nl,
     write(N),
-    write(", Tienes alguans discapacidad? s/n:"),
+    write(", Tienes alguna discapacidad? s/n:"),
     read(R),
     (   R=s -> 
         assert(tienesDiscapacidad(true))
@@ -209,7 +209,7 @@ servicioPorDiscapacidad(N) :-
 contenidoSensible(N) :- 
     nl,
     write(N),
-    write(", Han divulgado contenido sensible? s/n:"),
+    write(", Han divulgado contenido tuyo sensible?(videos o imagenes) s/n:"),
     read(R),
     (   R=s -> 
         assert(divulgaronContenidoSensible(true)) 
@@ -228,7 +228,7 @@ dispositivoElectronicoEnCasa(N) :-
         assert(cuentasConDispositivoElectronicoEnCasa(false))
     ).
 
-%Reglas Extras para consecuencias
+%Hechos Extras para consecuencias
 divorciados(N):- 
     nl,
     write(N),
@@ -243,7 +243,7 @@ divorciados(N):-
 causaPadres(N):- 
     nl,
     write(N),
-    write(", Fue causado por alguno de tus padres? s/n:"),
+    write(", Fue causado por alguno de tus padres algunos de los puntos anteriores? s/n:"),
     read(R),
     (   R=s -> 
         assert(fueCausadoPorPapa(true)) 
@@ -251,29 +251,61 @@ causaPadres(N):-
         assert(fueCausadoPorPapa(false))
     ).
 
-%-----------------------Derechos--------------------------
+%-----------------------Reglas--------------------------
 %Derecho a la vida, a la supervivencia y al desarrollo
 derechoVidaSupervivencia1:- 
     tieneComida(A), 
     tieneFamilia(B), 
     tieneCasa(C), 
-    (   (A,B,C) -> 
-        %Derecho Cumplido
+    (   (not(A), not(B),not(C)) -> 
         write("")
     ;
         %Derecho Incumplido
-        write("Estan incumpliendo tu derecho a la vida, a la supervivencia y al desarrollo. Debido a:")
+        (   write("-----------------------------------------------------------------------------------------------------"), 
+            nl,
+            write("-Estan incumpliendo tu derecho a la vida, a la supervivencia y al desarrollo. Razones:")
+        )
+    ),
+    %Causas
+    (   not(A) ->
+        (
+            nl,
+            write("No tienes comida, lo cual pone en riesgo el desarrollo del infante.")
+        )
+    ;
+        write("")
+    ),
+    (   not(B) ->
+        (
+            nl,
+            write("No tienes una familia. La cual todos deben de tener.")
+        )
+    ;
+        write("")
+    ),
+    (   not(C)->
+        (
+            nl,
+            write("No cuentas con un hogar para el apto desarrollo.")
+        )
+    ;
+        write("")
     ),
     nl.
 
 derechoVidaSupervivencia2:- 
     estaVivo(A), 
-    (   A -> 
-        %Derecho Cumplido
+    (   A ->
+        %Derecho cumplido
         write("")
-    ;
+    ; 
         %Derecho Incumplido
-        write("Estan incumpliendo tu derecho a la vida, a la supervivencia y al desarrollo")
+        (   write("-----------------------------------------------------------------------------------------------------"), 
+            nl,
+            write("-Estan incumpliendo tu derecho a la vida, a la supervivencia y al desarrollo. Razones:"),
+            nl,
+            write("Privacion de la vida.")
+        )
     ),
     nl.
 
@@ -283,9 +315,39 @@ derechoIdentidad:-
     tieneApellidos(B),
     estaRegistrado(C),
     (   (A,B,C)-> 
+        %Derecho cumplido
         write("")
     ;
-        write("Estan incumpliendo tu derecho a la identidad")
+        %Derecho Incumplido
+        (   write("-----------------------------------------------------------------------------------------------------"), 
+            nl,
+            write("-Estan incumpliendo tu derecho a la identidad. Razones: ")
+        )
+    ),
+     %Causas
+    (   not(A) ->
+        (
+            nl,
+            write("No tienes un nombre. Lo que indica que tus padres no son aptos. ")
+        )
+    ;
+        write("")
+    ),
+    (   not(B) ->
+        (
+            nl,
+            write("No tienes un apellido. Lo que indica que tus padres no son aptos.")
+        )
+    ;
+        write("")
+    ),
+    (   not(C)->
+        (
+            nl,
+            write("No cuentas con registro civil. Lo que indica que tus padres no son aptos.")
+        )
+    ;
+        write("")
     ),
     nl.
 
@@ -295,7 +357,12 @@ derechoFamilia:-
     (   A -> 
         write("")
     ;
-        write("Estan incumpliendo tu derecho a vivir en familia")
+        (   write("-----------------------------------------------------------------------------------------------------"), 
+            nl,
+            write("-Estan incumpliendo tu derecho a vivir en familia. Razones:"),
+            nl,
+            write("No tienes una familia. La cual todos deben de tener.")
+        )
     ),
     nl.
 
@@ -304,10 +371,38 @@ derechoNoDiscriminacion:-
     teDiscriminanPorSexo(A),
     teDiscriminanPorEtnia(B),
     teDiscriminanPorIdioma(C),
-    (   (not(A), not(B),not(C)) -> 
-        write("")
+    (   (A;B;C) -> 
+        (   write("-----------------------------------------------------------------------------------------------------"), 
+            nl,
+            write("-Estan incumpliendo tu derecho a no ser discriminado. Razones:")
+        )
     ;
-        write("Estan incumpliendo tu derecho a no ser discriminado")
+        write("")
+    ),
+    %Causas
+    (   A ->
+        (
+            nl,
+            write("Sufrir discriminacion de sexo. ")
+        )
+    ;
+        write("")
+    ),
+    (   B ->
+        (
+            nl,
+            write("Sufrir discriminacion de etnia.")
+        )
+    ;
+        write("")
+    ),
+    (   C->
+        (
+            nl,
+            write("Sufrir discriminacion por idioma.")
+        )
+    ;
+        write("")
     ),
     nl.
 
@@ -318,17 +413,57 @@ derechoBienestarDesarrollo1:-
     (   (A,not(B))-> 
         write("")
     ;
-        write("Estan incumpliendo tu derecho a vivir a vivir en condiciones de bienestar y a un sano desarrollo integral")
+        (   write("-----------------------------------------------------------------------------------------------------"), 
+            nl,
+            write("-Estan incumpliendo tu derecho a vivir a vivir en condiciones de bienestar y a un sano desarrollo integral. Razones:")
+        )
+    ),
+    %Causas
+    (   not(A) ->
+        (
+            nl,
+            write("No vas a la escuela, lo cual pone en riesgo el desarrollo integral. ")
+        )
+    ;
+        write("")
+    ),
+    (   B ->
+        (
+            nl,
+            write("Vas al trabajo, lo cual pone en riesgo el desarrollo integral y bienestar.")
+        )
+    ;
+        write("")
     ),
     nl.
 
 derechoBienestarDesarrollo2:- 
     teViolentanFisicamente(A) , 
     teViolentanPsicologicamente(B), 
-    (   (not(A),not(B)) -> 
-        write("")
+    (   (A;B) -> 
+        (   write("-----------------------------------------------------------------------------------------------------"), 
+            nl,
+            write("-Estan incumpliendo tu derecho a vivir en condiciones de bienestar y a un sano desarrollo integral. Razones:")
+        )
     ;
-        write("Estan incumpliendo tu derecho a vivir en condiciones de bienestar y a un sano desarrollo integral")
+        write("")
+    ),
+    %Causas
+    (   A ->
+        (
+            nl,
+            write("Violencia fisica que pone en riesgo el vivir en condiciones de bienestar. ")
+        )
+    ;
+        write("")
+    ),
+    (   B ->
+        (
+            nl,
+            write("Violencia psicologica que pone en riesgo el vivir en condiciones de bienestar.")
+        )
+    ;
+        write("")
     ),
     nl.
 
@@ -336,10 +471,30 @@ derechoBienestarDesarrollo2:-
 derechoLibreViolencia:- 
     teViolentanFisicamente(A), 
     teViolentanPsicologicamente(B), 
-    (   (not(A),not(B))-> 
-        write("")
+    (   (A;B)-> 
+        (   write("-----------------------------------------------------------------------------------------------------"), 
+            nl,
+            write("-Estan incumpliendo tu derecho a una vida libre de violencia y a la integridad personal. Razones:")
+        )
     ;
-        write("Estan incumpliendo tu derecho a una vida libre de violencia y a la integridad personal")
+        write("")
+    ),
+    %Causas
+    (   A ->
+        (
+            nl,
+            write("Violencia fisica que incumple el derecho de vivir libre de violencia. ")
+        )
+    ;
+        write("")
+    ),
+    (   B->
+        (
+            nl,
+            write("Violencia psicologica que incumple el derecho de vivir libre de violencia. ")
+        )
+    ;
+        write("")
     ),
     nl.
 
@@ -349,18 +504,30 @@ derechoSalud1 :-
     (   A -> 
         write("")
     ;
-        write("Estan incumpliendo tu derecho a la proteccion de la salud y a la seguridad social")
+        (   write("-----------------------------------------------------------------------------------------------------"), 
+            nl,
+            write("-Estan incumpliendo tu derecho a la proteccion de la salud y a la seguridad social. Razones:"),
+            nl,
+            write("No cuidan o no ejercen el derecho de salud. ")
+        )
     ),
     nl.
 
 derechoSalud2 :- 
     teAtendieronHospital(A),
-    (   A -> 
+    (   not(A) -> 
         write("")
     ;
-        write("Estan incumpliendo tu derecho a la proteccion de la salud y a la seguridad social")
+        (   write("-----------------------------------------------------------------------------------------------------"), 
+            nl,
+            write("-Estan incumpliendo tu derecho a la proteccion de la salud y a la seguridad social. Razones:"),
+            nl,
+            write("Hospital nego el derecho a la salud. ")
+        )
     ),
     nl.
+
+
 
 %Derecho a la inclusion de ninas, ninos y adolescentes con discapacidad
 derechoInclusionDiscapacidad:- 
@@ -369,7 +536,12 @@ derechoInclusionDiscapacidad:-
     (   (A,not(B)) -> 
         write("")
     ;
-        write("Estan incumpliendo tu derecho a la inclusion de ninas, ninos y adolescentes con discapacidad")
+        (   write("-----------------------------------------------------------------------------------------------------"), 
+            nl,
+            write("-Estan incumpliendo tu derecho a la inclusion de ninas, ninos y adolescentes con discapacidad. Razones:"),
+            nl,
+            write("Negacion de servicio a un nino con discapacidad")
+        )
     ),
     nl.
 %Derecho a la educacion
@@ -378,9 +550,15 @@ derechoEducacion:-
     (   A -> 
         write("")
     ;
-        write("Estan incumpliendo tu derecho a la educacion")
+        (   write("-----------------------------------------------------------------------------------------------------"), 
+            nl,
+            write("-Estan incumpliendo tu derecho a la educacion. Razones:"),
+            nl,
+            write("No vas a la escuela, lo cual pone en riesgo el desarrollo integral. ")
+        )
     ),
     nl.
+
 
 %Derecho a la libertad de expresion y de acceso a la informacion
 derechoLibertadExpresionAccesoInf:- 
@@ -388,7 +566,11 @@ derechoLibertadExpresionAccesoInf:-
     (   not(A)-> 
         write("")
     ;
-        write("Estan incumpliendo tu derecho a la libertad de expresion y de acceso a la informacion")
+        write("-----------------------------------------------------------------------------------------------------"), 
+        nl,
+        write("-Estan incumpliendo tu derecho a la libertad de expresion y de acceso a la informacion. Razones:"),
+        nl,
+        write("Divulgacion de contenido sensible(imagenes,videos)")
     ),
     nl.
 
@@ -398,7 +580,12 @@ derechoIntimidad:-
     (   not(A) -> 
         write("")
     ;
-        write("Estan incumpliendo tu derecho a la intimidad")
+        (   write("-----------------------------------------------------------------------------------------------------"), 
+            nl,
+            write("-Estan incumpliendo tu derecho a la intimidad. Razones:"),
+            nl,
+            write("Atentan fisicamente contra tu intimidad.")
+        )
     ),
     nl.
 
@@ -408,7 +595,13 @@ derechoAccesoTecnologia:-
     (   A -> 
         write("")
     ;
-        write("Estan incumpliendo tu derecho de acceso a las tecnologias de la informacion y comunicacion")
+       (    write("-----------------------------------------------------------------------------------------------------"), 
+            nl,
+            write("-Estan incumpliendo tu derecho de acceso a las tecnologias de la informacion y comunicacion. Razones:"),
+            nl,
+            write("Debido a que no cuentas con dispositivo electronico."),
+            write("Posibles acciones a llevar: Demandar al gobierno por incumpliemiento de derecho.")
+        )
     ),
     nl.
 
