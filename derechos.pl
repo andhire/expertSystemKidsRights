@@ -1,3 +1,4 @@
+%Base de conocimiento
 %Hechos a Preguntar. Respuesta se guarda en memoria.
 familia(N) :- 
     nl,
@@ -90,7 +91,7 @@ padres(N) :-
 discriminanPorSexo(N) :- 
     nl,
     write(N),
-    write(", Te discriminan por tu sexo? s/n:"),
+    write(", Alguien te discriminan por tu sexo? s/n:"),
     read(R),
     (   R=s -> 
         assert(teDiscriminanPorSexo(true))
@@ -101,7 +102,7 @@ discriminanPorSexo(N) :-
 discriminanPorEtnia(N) :- 
     nl,
     write(N),
-    write(", Te discriminan por tu etnia? s/n:"),
+    write(", Alguien te discriminan por tu etnia? s/n:"),
     read(R),
     (   R=s -> 
         assert(teDiscriminanPorEtnia(true)) 
@@ -112,7 +113,7 @@ discriminanPorEtnia(N) :-
 discriminanPorIdioma(N) :- 
     nl,
     write(N),
-    write(", Te discriminan por tu idioma? s/n:"),
+    write(", Alguien te discriminan por tu idioma? s/n:"),
     read(R),
     (   R=s -> 
         assert(teDiscriminanPorIdioma(true)) 
@@ -166,7 +167,7 @@ trabajo(N) :-
 doctor(N) :- 
     nl,
     write(N),
-    write(", Tus padres te llevan al doctor cuando te enfermas? s/n:"),
+    write(", Vas al doctor cuando te enfermas? s/n:"),
     read(R),
     (   R=s -> 
         assert(vasDoctorCuandoEnfermas(true))
@@ -257,7 +258,7 @@ derechoVidaSupervivencia1:-
     tieneComida(A), 
     tieneFamilia(B), 
     tieneCasa(C), 
-    (   (not(A), not(B),not(C)) -> 
+    (   (A, B,C) -> 
         write("")
     ;
         %Derecho Incumplido
@@ -291,6 +292,17 @@ derechoVidaSupervivencia1:-
     ;
         write("")
     ),
+    (   (A, B,C) -> 
+        write("")
+    ;   
+        write("Posibles acciones a llevar: "),
+        papasDivorciados(X),
+        (   X->
+            write("Guarda y custodia del menor.")
+        ;
+            write("Revocacion de tutor/padres o llevarlo a albergue de menores.")
+        )
+    ),
     nl.
 
 derechoVidaSupervivencia2:- 
@@ -304,7 +316,10 @@ derechoVidaSupervivencia2:-
             nl,
             write("-Estan incumpliendo tu derecho a la vida, a la supervivencia y al desarrollo. Razones:"),
             nl,
-            write("Privacion de la vida.")
+            write("Privacion de la vida."),
+            nl,
+            write("Posibles acciones a llevar: "),
+            write("Delito penal contra el causante")
         )
     ),
     nl.
@@ -349,6 +364,13 @@ derechoIdentidad:-
     ;
         write("")
     ),
+    (   (A,B,C)->
+        write("")
+    ;
+        nl,
+        write("Posibles acciones a llevar: "),
+        write("Revocacion de tutor/padres o llevarlo a albergue de menores.")
+    ),
     nl.
 
 %Derecho a vivir en familia
@@ -361,7 +383,16 @@ derechoFamilia:-
             nl,
             write("-Estan incumpliendo tu derecho a vivir en familia. Razones:"),
             nl,
-            write("No tienes una familia. La cual todos deben de tener.")
+            write("No tienes una familia. La cual todos deben de tener."),
+            nl,
+            write("Posibles acciones a llevar: "),
+            tieneFamilia(X),
+            (   X->
+                write("Elegir vivir con la familia")
+            ;
+                write("Albergue de menores. Derecho a ser adoptado.")
+
+            )
         )
     ),
     nl.
@@ -404,6 +435,19 @@ derechoNoDiscriminacion:-
     ;
         write("")
     ),
+    (   (A;B;C)->
+        nl,
+        write("Posibles acciones a llevar: "),
+        fueCausadoPorPapa(X),
+        (   X->
+            write("Guarda y custodia del menor.")
+        ;
+            write("")
+        ),
+        write("Delito penal contra el causante.")
+    ;
+        write("")
+    ),
     nl.
 
 %Derecho a vivir en condiciones de bienestar y a un sano desarrollo integral
@@ -435,6 +479,19 @@ derechoBienestarDesarrollo1:-
     ;
         write("")
     ),
+    (   (A,not(B))->
+        write("")
+    ;
+        (   nl,
+            write("Posibles acciones a llevar: "),
+            papasDivorciados(X),
+            (   X ->
+                write("Guarda y custodia del menor.")
+            ;
+                write("Revocacion de tutor/padres o llevarlo a albergue de menores.")
+            )
+        )
+    ),
     nl.
 
 derechoBienestarDesarrollo2:- 
@@ -462,6 +519,19 @@ derechoBienestarDesarrollo2:-
             nl,
             write("Violencia psicologica que pone en riesgo el vivir en condiciones de bienestar.")
         )
+    ;
+        write("")
+    ),
+    (   (A;B)->
+        nl,
+        write("Posibles acciones a llevar: "),
+        fueCausadoPorPapa(X),
+        (   X->
+            write("Guarda y custodia del menor.")
+        ;
+            write("")
+        ),
+        write("Delito penal contra el causante.")
     ;
         write("")
     ),
@@ -496,6 +566,19 @@ derechoLibreViolencia:-
     ;
         write("")
     ),
+    (   (A;B)->
+        nl,
+        write("Posibles acciones a llevar: "),
+        fueCausadoPorPapa(X),
+        (   X->
+            write("Guarda y custodia del menor.")
+        ;
+            write("")
+        ),
+        write("Delito penal contra el causante.")
+    ;
+        write("")
+    ),
     nl.
 
 %Derecho a la proteccion de la salud y a la seguridad social
@@ -508,7 +591,21 @@ derechoSalud1 :-
             nl,
             write("-Estan incumpliendo tu derecho a la proteccion de la salud y a la seguridad social. Razones:"),
             nl,
-            write("No cuidan o no ejercen el derecho de salud. ")
+            write("No cuidan o no ejercen el derecho de salud. "),
+            papasDivorciados(X),
+            estaVivo(Y),
+            nl,
+            write("Posibles acciones a llevar:"),
+            (   (X,Y) ->
+                write("Guarda y custodia del menor.")
+            ;   
+                (   not(Y) ->
+                    write("Delito penal contra el causante.")
+                ;
+                    write("Revocacion de tutor/padres o llevarlo a albergue de menores.")
+                )
+                
+            )
         )
     ),
     nl.
@@ -522,7 +619,9 @@ derechoSalud2 :-
             nl,
             write("-Estan incumpliendo tu derecho a la proteccion de la salud y a la seguridad social. Razones:"),
             nl,
-            write("Hospital nego el derecho a la salud. ")
+            write("Hospital nego el derecho a la salud. "),
+            nl,
+            write("Posibles acciones a llevar: Demandar a la institucion (Posibles multas)")
         )
     ),
     nl.
@@ -540,7 +639,9 @@ derechoInclusionDiscapacidad:-
             nl,
             write("-Estan incumpliendo tu derecho a la inclusion de ninas, ninos y adolescentes con discapacidad. Razones:"),
             nl,
-            write("Negacion de servicio a un nino con discapacidad")
+            write("Negacion de servicio a un nino con discapacidad."),
+            nl,
+            write("Posibles acciones a llevar: Demandar a la institucion (Posibles multas y demandar la inclusion)")
         )
     ),
     nl.
@@ -554,7 +655,21 @@ derechoEducacion:-
             nl,
             write("-Estan incumpliendo tu derecho a la educacion. Razones:"),
             nl,
-            write("No vas a la escuela, lo cual pone en riesgo el desarrollo integral. ")
+            write("No vas a la escuela, lo cual pone en riesgo el desarrollo integral. "),
+            nl,
+            write("Posibles acciones a llevar: "),
+            papasDivorciados(X),
+            tieneFamilia(Y),
+            (
+                X ->
+                write("Guarda y custodia del menor.")
+            ;
+                (   Y ->
+                    write("Revocacion de tutor/padres o llevarlo a albergue de menores.")
+                ;
+                    write("")
+                )
+            )
         )
     ),
     nl.
@@ -566,11 +681,22 @@ derechoLibertadExpresionAccesoInf:-
     (   not(A)-> 
         write("")
     ;
-        write("-----------------------------------------------------------------------------------------------------"), 
-        nl,
-        write("-Estan incumpliendo tu derecho a la libertad de expresion y de acceso a la informacion. Razones:"),
-        nl,
-        write("Divulgacion de contenido sensible(imagenes,videos)")
+        (   write("-----------------------------------------------------------------------------------------------------"), 
+            nl,
+            write("-Estan incumpliendo tu derecho a la libertad de expresion y de acceso a la informacion. Razones:"),
+            nl,
+            write("Divulgacion de contenido sensible(imagenes,videos)"),
+            nl,
+            write("Posibles acciones a llevar: "),
+            fueCausadoPorPapa(X),
+            (
+                X ->
+                write("Guarda y custodia del menor.")
+            ;
+                write("")
+            ),
+            write("Delito penal contra el causante.")
+        )
     ),
     nl.
 
@@ -584,7 +710,17 @@ derechoIntimidad:-
             nl,
             write("-Estan incumpliendo tu derecho a la intimidad. Razones:"),
             nl,
-            write("Atentan fisicamente contra tu intimidad.")
+            write("Atentan fisicamente contra tu intimidad."),
+            nl,
+            write("Posibles acciones a llevar: "),
+            fueCausadoPorPapa(X),
+            (
+                X ->
+                write("Guarda y custodia del menor.")
+            ;
+                write("")
+            ),
+            write("Delito penal contra el causante.")
         )
     ),
     nl.
@@ -600,6 +736,7 @@ derechoAccesoTecnologia:-
             write("-Estan incumpliendo tu derecho de acceso a las tecnologias de la informacion y comunicacion. Razones:"),
             nl,
             write("Debido a que no cuentas con dispositivo electronico."),
+            nl,
             write("Posibles acciones a llevar: Demandar al gobierno por incumpliemiento de derecho.")
         )
     ),
