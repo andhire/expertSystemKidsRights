@@ -77,16 +77,22 @@ registrado(N) :-
         assert(estaRegistrado(false))
     ).
 
-padres(N) :-  
-    nl,
-    write(N),
-    write(", Tienes padres? s/n:"),
-    read(R),
-    (   R=s -> 
-        assert(tienePadres(true)) 
-    ; 
+padres(N) :- 
+    tieneFamilia(X),
+    (   X->
+        nl,
+        write(N),
+        write(", Tienes padres? s/n:"),
+        read(R),
+        (   R=s -> 
+            assert(tienePadres(true)) 
+        ; 
+            assert(tienePadres(false))
+        )
+    ;
         assert(tienePadres(false))
     ).
+    
 
 discriminanPorSexo(N) :- 
     nl,
@@ -231,26 +237,38 @@ dispositivoElectronicoEnCasa(N) :-
 
 %Hechos Extras para consecuencias
 divorciados(N):- 
-    nl,
-    write(N),
-    write(", Tus padres son divorciados? s/n:"),
-    read(R),
-    (   R=s -> 
-        assert(papasDivorciados(true))
-    ; 
+    tienePadres(X),
+    (   X ->
+        nl,
+        write(N),
+        write(", Tus padres son divorciados? s/n:"),
+        read(R),
+        (   R=s -> 
+            assert(papasDivorciados(true))
+        ; 
+            assert(papasDivorciados(false))
+        )
+    ;    
         assert(papasDivorciados(false))
     ).
+    
 
 causaPadres(N):- 
-    nl,
-    write(N),
-    write(", Fue causado por alguno de tus padres algunos de los puntos anteriores? s/n:"),
-    read(R),
-    (   R=s -> 
-        assert(fueCausadoPorPapa(true)) 
-    ; 
+    tienePadres(X),
+    (   X ->
+        nl,
+        write(N),
+        write(", Fue causado por alguno de tus padres algunos de los puntos anteriores? s/n:"),
+        read(R),
+        (   R=s -> 
+            assert(fueCausadoPorPapa(true)) 
+        ; 
+            assert(fueCausadoPorPapa(false))
+        )
+    ;
         assert(fueCausadoPorPapa(false))
     ).
+    
 
 %-----------------------Reglas--------------------------
 %Derecho a la vida, a la supervivencia y al desarrollo
@@ -459,7 +477,7 @@ derechoBienestarDesarrollo1:-
     ;
         (   write("-----------------------------------------------------------------------------------------------------"), 
             nl,
-            write("-Estan incumpliendo tu derecho a vivir a vivir en condiciones de bienestar y a un sano desarrollo integral. Razones:")
+            write("-Estan incumpliendo tu derecho a vivir en condiciones de bienestar y a un sano desarrollo integral. Razones:")
         )
     ),
     %Causas
@@ -667,7 +685,7 @@ derechoEducacion:-
                 (   Y ->
                     write("Revocacion de tutor/padres o llevarlo a albergue de menores.")
                 ;
-                    write("")
+                    write("Inscripcion a una escuela.")
                 )
             )
         )
@@ -792,3 +810,4 @@ derechos :-
     derechoLibertadExpresionAccesoInf,
     derechoIntimidad,
     derechoAccesoTecnologia.
+
